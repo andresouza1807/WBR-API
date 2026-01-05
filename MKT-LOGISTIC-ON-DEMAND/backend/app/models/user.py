@@ -9,7 +9,7 @@ class User(SQLModel, table=True):
     name: str
     email: str = Field(index=True, unique=True)
     password_hash: str
-    role: str  # admin | carrier
+    role: str = "USER"  # admin | carrier
     active: bool = True
     created_at: datetime = Field(default_factory=datetime.now)
  #  updated_at: datetime = Field(default_factory=datetime.now, nullable=False)

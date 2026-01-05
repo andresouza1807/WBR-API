@@ -1,0 +1,28 @@
+backend/
+├── app/
+│   ├── main.py
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── security.py
+│   │   └── database.py
+│   ├── models/
+│   │   ├── company.py
+│   │   ├── user.py
+│   │   ├── vehicle.py
+│   │   ├── carrier.py
+│   │   ├── load.py
+│   │   └── event.py
+│   ├── schemas/
+│   ├── repositories/
+│   ├── services/
+│   ├── api/
+│   │   ├── deps.py
+│   │   ├── auth.py
+│   │   ├── loads.py
+│   │   └── carriers.py
+│   └── utils/
+├── alembic/
+├── tests/
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt

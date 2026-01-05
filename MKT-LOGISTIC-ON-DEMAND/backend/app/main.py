@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.api.auth import router as auth_router
-from app.api.auth import router as loads_router
+from app.api.loads import router as loads_router
 from app.core.database import init_db  # Importe sua função aqui
 
 

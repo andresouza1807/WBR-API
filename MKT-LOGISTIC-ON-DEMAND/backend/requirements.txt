@@ -1,0 +1,17 @@
+# Framework web
+fastapi==0.115.6
+uvicorn[standard]==0.30.6
+
+# ORM / Database
+sqlmodel==0.0.22
+psycopg[binary]==3.2.3
+
+# Auth / Security
+python-jose==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Configurações
+pydantic-settings==2.6.1
+
+# Utilitários
+python-multipart==0.0.9

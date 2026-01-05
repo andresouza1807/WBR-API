@@ -3,9 +3,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
 
-    DATABSE_URL: str
-    SECRET_KEY: str
-    ALGORITHM: str
+    DATABASE_URL: str = "postgresql://andre:Ans%40glob2021@localhost:5432/mkt_logistic"
+    SECRET_KEY: str = "Ans@glob2021"
+    ALGORITHM: str = "HS256"
     ACESS_TOKEN_EXPIRE_MINUTES: int = 60
 
 

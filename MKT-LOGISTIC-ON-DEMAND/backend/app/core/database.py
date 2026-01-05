@@ -7,4 +7,7 @@ engine = create_engine(settings.DATABSE_URL, echo=False)
 def get_session():
     with Session(engine) as session:
         yield session
-# Create the database tables
+
+
+def init_db():
+    SQLModel.metadata.create_all(engine)

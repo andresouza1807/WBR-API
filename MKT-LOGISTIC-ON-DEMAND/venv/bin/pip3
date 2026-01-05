@@ -1,4 +1,4 @@
-#!/home/andre-souza/Desktop/Vscode/MKT-LOGISTIC-ON-DEMAND/venv/bin/python3
+#!/home/andre-souza/Desktop/Vscode/MKT-LOGISTIC-ON-DEMAND/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

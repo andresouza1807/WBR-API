@@ -21,6 +21,6 @@ def login(
         raise HTTPException(
             status_code=401, detail="Invalid email or password")
 
-    access_token = create_access_token(data={"sub": str(user.id)})
+    access_token = create_access_token(data={"sub": str(User.id)})
 
     return TokenResponse(access_token=access_token, token_type="bearer")

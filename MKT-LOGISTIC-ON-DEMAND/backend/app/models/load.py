@@ -20,7 +20,7 @@ class Load(SQLModel, table=True):
     pickup_date: date
     delivery_deadline: date | None = None
     vehicle_type_id: UUID | None = Field(
-        default=None, foreign_key="vehicletype.id")
+        default=None, foreign_key=None)
     status: str = "open"  # available | assigned | in_transit | delivered
     created_by: UUID = Field(foreign_key="user.id")
     created_at: datetime = Field(default_factory=datetime.now)

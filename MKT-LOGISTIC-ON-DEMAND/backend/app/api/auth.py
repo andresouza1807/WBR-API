@@ -6,7 +6,7 @@ from app.models.user import User
 from app.core.database import get_session
 from app.core.security import verify_password, create_access_token
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix="/auth", tags=["Auth API"])
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -19,8 +19,8 @@ def login(
 
     if not user or not verify_password(data.password, User.password_hash):
         raise HTTPException(
-            status_code=401, detail="Invalid email or password")
+            status_code=401, detail="Invalid email or password API/auth.py")
 
-    access_token = create_access_token(data={"sub": str(User.id)})
+    access_token = create_access_token({"sub": str(User.id)})
 
-    return TokenResponse(access_token=access_token, token_type="bearer")
+    return TokenResponse(access_token=access_token)

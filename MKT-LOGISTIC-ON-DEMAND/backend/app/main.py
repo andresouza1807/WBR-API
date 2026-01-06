@@ -17,12 +17,18 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(load_interest_router,
-                   prefix="/load_interest", tags=["load_interest"])
+                   prefix="/load_interest")
 
 
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the HEAVEN!"}
+
+
+@app.post("/auth/login")
+async def login():
+
+    return {"message": "Login successful"}
 
 
 @app.get("/health")

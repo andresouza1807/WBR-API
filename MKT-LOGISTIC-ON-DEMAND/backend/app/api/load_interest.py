@@ -53,45 +53,6 @@ async def appply_for_load(
     return load_interest
 
 
-@router.post("/{load_id}/interest", response_model=LoadInterest)
-async def appply_for_load(
-    load_id: str,
-    proposed_price: float | None = None,
-    message: str | None = None,
-    session: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user),
-):
-    # # Check if the load exists
-    # load = session.get(Load, load_id)
-    # if not load:
-    #     raise HTTPException(status_code=404, detail="Load not found")
-
-    # # Check if the user has already applied for this load
-    # statement = select(LoadInterest).where(
-    #     LoadInterest.load_id == load_id,
-    #     LoadInterest.transporter_id == current_user.id,
-    # )
-    # existing_interest = session.exec(statement).first()
-    # if existing_interest:
-    #     raise HTTPException(
-    #         status_code=400, detail="You have already applied for this load")
-
-    # # Create a new LoadInterest entry
-    # load_interest = LoadInterest(
-    #     load_id=load_id,
-    #     transporter_id=current_user.id,
-    #     company_id=current_user.company_id,
-    #     proposed_price=proposed_price,
-    #     message=message,
-    # )
-    # session.add(load_interest)
-    # session.commit()
-    # session.refresh(load_interest)
-
-    # return load_interest
-    return {"message": "Functionality temporarily disabled."}
-
-
 def list_load_interests(
     load_id: str,
     session: Session = Depends(get_session),
@@ -105,7 +66,8 @@ def list_load_interests(
     return {"message": "Functionality temporarily disabled."}
 
 
-def accept_interest(
+@router.post("/interest/{interest_id}/accept")
+async def accept_interest(
     interest_id: str,
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),

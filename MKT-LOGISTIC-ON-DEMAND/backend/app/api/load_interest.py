@@ -149,6 +149,9 @@ def accept_interest(
         payload={
             "interest_id": interest.id,
             "proposed_price": interest.proposed_price,
+            "transporter_id": interest.transporter_id,
+            "interest_id": interest.id,
         },
+
     )
     return {"message": "Functionality temporarily disabled."}

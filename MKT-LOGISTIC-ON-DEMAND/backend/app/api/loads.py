@@ -22,16 +22,16 @@ def list_loads(
     ).all()
 
 
-# Depois de salvar a carga.
-log_event(
-    session=session,
-    company_id=current_user.company_id,
-    user_id=current_user.id,
-    entity_id=load.id,
-    entity_type="load",
-    event_type=Eventtype.LOAD_CREATED,
-    payload={
-        "weight": load.weight,
-        "origin": load.origin,
-    },
-)
+# # Depois de salvar a carga.
+# log_event(
+#     session=session,
+#     company_id=current_user.company_id,
+#     user_id=current_user.id,
+#     entity_id=load.id,
+#     entity_type="load",
+#     event_type=Eventtype.LOAD_CREATED,
+#     payload={
+#         "weight": load.weight,
+#         "origin": load.origin,
+#     },
+# )

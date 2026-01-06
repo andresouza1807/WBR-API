@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from app.core.database import init_db
+from app.api.load_interest import router as load_interest_router
 
 
 @asynccontextmanager
@@ -14,6 +15,9 @@ async def lifespan(app: FastAPI):
     print("Shutting down application...")
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(load_interest_router,
+                   prefix="/load_interest", tags=["load_interest"])
 
 
 @app.get("/")

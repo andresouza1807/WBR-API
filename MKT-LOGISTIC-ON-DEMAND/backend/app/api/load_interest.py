@@ -105,11 +105,28 @@ def list_load_interests(
     return {"message": "Functionality temporarily disabled."}
 
 
-def accept_load_interest(
-    interest_id: int,
+def accept_interest(
+    interest_id: str,
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
+    interest = session.exec(
+        select(LoadInterest).where(LoadInterest.id == interest_id,
+                                   LoadInterest.company_id == current_user.company_id)
+    ).first()
+    if not interest:
+        raise HTTPException(status_code=404, detail="Load interest not found")
+
+    load = session.get(Load, interest.load_id)
+    if not load:
+        raise HTTPException(status_code=404, detail="Load not found")
+    if load.status != "OPEN":
+        raise HTTPException(
+            status_code=400, detail="Load is not open for accepting interests")
+
+    interest.status = "ACCEPTED"
+    load.status = "ASSIGNED"
+    load.assigned_transporter_id = interest.transporter_id
     # load_interest = session.get(LoadInterest, interest_id)
     # if not load_interest:
     #     raise HTTPException(status_code=404, detail="Load interest not found")
@@ -122,17 +139,16 @@ def accept_load_interest(
     # session.refresh(load_interest)
 
     # return load_interest
+    log_event(
+        Session=session,
+        company_id=current_user.company_id,
+        user_id=current_user.id,
+        entity_id=Load.id,
+        entity_type="Load",
+        event_type=EventType.LOAD_INTEREST_APPLIED,
+        payload={
+            "interest_id": interest.id,
+            "proposed_price": interest.proposed_price,
+        },
+    )
     return {"message": "Functionality temporarily disabled."}
-
-
-log_event(
-    Session=session,
-    company_id=current_user.company_id,
-    user_id=current_user.id,
-    entity_id=Load.id,
-    event_type=EventType.LOAD_INTEREST_APPLIED,
-    payload={
-        "interest_id": load_interest.id,
-        "proposed_price": interest.proposed_price,
-    },
-)

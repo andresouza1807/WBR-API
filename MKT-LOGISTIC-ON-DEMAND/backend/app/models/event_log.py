@@ -1,3 +1,4 @@
+from sqlalchemy import Column
 from sqlmodel import SQLModel, Field
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -18,7 +19,7 @@ class EventLog(SQLModel, table=True):
 
     timestamp: datetime = Field(default_factory=datetime.now)
 
-    payload: dict = Field(sa_column_kwargs={"type": JSON})
+    payload: dict = Field(sa_column=Column(JSON), default={})
 
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={

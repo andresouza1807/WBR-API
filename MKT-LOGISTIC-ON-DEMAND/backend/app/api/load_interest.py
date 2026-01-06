@@ -7,6 +7,8 @@ from app.models.load import Load
 from app.models.user import User
 from app.models.load_interest import LoadInterest
 from app.api.deps import get_current_user
+from app.core.events import EventType
+from app.services.event_logger import log_event
 
 
 router = APIRouter(prefix="/load", tags=["Load Interests"])
@@ -121,3 +123,16 @@ def accept_load_interest(
 
     # return load_interest
     return {"message": "Functionality temporarily disabled."}
+
+
+log_event(
+    Session=session,
+    company_id=current_user.company_id,
+    user_id=current_user.id,
+    entity_id=Load.id,
+    event_type=EventType.LOAD_INTEREST_APPLIED,
+    payload={
+        "interest_id": load_interest.id,
+        "proposed_price": interest.proposed_price,
+    },
+)

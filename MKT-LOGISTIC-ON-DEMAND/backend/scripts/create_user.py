@@ -1,26 +1,33 @@
 from sqlmodel import Session
-
 from app.core.database import engine
-from app.models.company import Company
 from app.models.user import User
+from app.models.company import Company
 from app.core.security import hash_password
 
 with Session(engine) as session:
-    # Create a new company
-    new_company = Company(name="Example Company")
-    session.add(new_company)
+    company = Company(name="Empresa Teste")
+    session.add(company)
     session.commit()
-    session.refresh(new_company)
+    session.refresh(company)
 
-    # Create a new user associated with the company
-    new_user = User(
-        company_id=new_company.id,
-        email="admin@demo.com",
+    admin = User(
+        name="Admin Teste",
+        company_id=company.id,
+        email="admin@teste.com",
         password_hash=hash_password("123456"),
-        role="admin",)
+        role="ADMIN",
+    )
 
-    session.add(new_user)
+    transporter = User(
+        name="Transporter Teste",
+        company_id=company.id,
+        email="transp@teste.com",
+        password_hash=hash_password("123456"),
+        role="USER",
+    )
+
+    session.add(admin)
+    session.add(transporter)
     session.commit()
 
-    print(
-        f"Created user: {new_user.email} with role: {new_user.role} for company: {new_company.name}")
+    print("Usuários de teste criados")

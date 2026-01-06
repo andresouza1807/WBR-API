@@ -66,7 +66,7 @@ def list_load_interests(
     return {"message": "Functionality temporarily disabled."}
 
 
-@router.post("/interest/{interest_id}/accept")
+@router.post("/accept")
 async def accept_interest(
     interest_id: str,
     session: Session = Depends(get_session),

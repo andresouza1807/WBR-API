@@ -23,3 +23,23 @@ app.include_router(load_interest_router,
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the HEAVEN!"}
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
+
+@app.get("/version")
+async def get_version():
+    return {"version": "1.0.0"}
+
+
+@app.get("/status")
+async def get_status():
+    return {"status": "running"}
+
+
+@app.get("/load_interest")
+async def load_interest_status():
+    return {"load_interest": "active"}

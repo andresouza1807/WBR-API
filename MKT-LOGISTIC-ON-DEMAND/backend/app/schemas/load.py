@@ -4,6 +4,8 @@ from datetime import datetime
 
 
 class LoadCreate(BaseModel):
+    def __call__(self, *args, **kwds):
+        return super().__call__(*args, **kwds)
     title: str
     description: str | None = None
     weight: float
@@ -11,6 +13,8 @@ class LoadCreate(BaseModel):
 
 
 class LoadResponse(BaseModel):
+    def __call__(self, *args, **kwds):
+        return super().__call__(*args, **kwds)
     id: UUID
     title: str
     description: str | None = None

@@ -1,22 +1,22 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
+from uuid import UUID as uuid
 
 from app.core.database import get_session
 from app.models.load_interest import LoadInterest
 from app.models.load import Load
 from app.models.user import User
-from app.models.load_interest import LoadInterest
 from app.api.deps import get_current_user
 from app.core.events import EventType
 from app.services.event_logger import log_event
 
 
-router = APIRouter(prefix="/load", tags=["Load Interests"])
+router = APIRouter(tags=["Load Interest"])
 
 
 @router.post("/{load_id}/interest", response_model=LoadInterest)
 async def appply_for_load(
-    load_id: str,
+    load_id: uuid,
     proposed_price: float | None = None,
     message: str | None = None,
     session: Session = Depends(get_session),
@@ -29,9 +29,8 @@ async def appply_for_load(
 
     # Check if the user has already applied for this load
     statement = select(Load).where(
-        Load.load_id == load_id,
-        Load.company_id == current_user.company_id,
-        Load.status == "OPEN",
+        LoadInterest.load_id == load_id,
+        LoadInterest.transporter_id == current_user.id,
     )
     existing_interest = session.exec(statement).first()
     if existing_interest:
@@ -105,9 +104,9 @@ async def accept_interest(
         Session=session,
         company_id=current_user.company_id,
         user_id=current_user.id,
-        entity_id=Load.id,
+        entity_id=load.id,
         entity_type="Load",
-        event_type=EventType.LOAD_INTEREST_APPLIED,
+        event_type=EventType.LOAD_INTEREST_ACCEPTED,
         payload={
             "interest_id": interest.id,
             "proposed_price": interest.proposed_price,

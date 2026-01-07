@@ -1,10 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from contextlib import asynccontextmanager
 from uuid import uuid4
 from datetime import datetime
 
 from app.core.database import init_db
-# from app.api.load_interest import router as load_interest_router
+from app.api.load_interest import router as load_interest_router
 from app.core.security import create_access_token
 from app.schemas.auth_login import Loginrequest
 from app.schemas.load import LoadCreate, LoadResponse
@@ -21,6 +22,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.include_router(load_interest_router,
+                   prefix="/load_interest")
+
 
 @app.get("/")
 async def read_root():
@@ -28,7 +32,7 @@ async def read_root():
 
 
 @app.post("/auth/login")
-async def login(payload: Loginrequest):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user_payload = {
         "user_id": str(uuid4()),
         "company_id": str(uuid4()),

@@ -2,12 +2,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlmodel import Session, select
+from uuid import UUID as uuid
 
 from app.core.config import settings
 from app.core.database import get_session
 from app.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_current_user(
@@ -23,6 +24,13 @@ def get_current_user(
         payload = jwt.decode(token, settings.SECRET_KEY,
                              algorithms=[settings.ALGORITHM])
         user_id: str = payload.get("sub")
+        company_id: str = payload.get("company_id")
+        roles: str = payload.get("roles")
+
+        if not user_id:
+            raise HTTPException(
+                status_code=401, detail="User ID missing in token")
+
         if user_id is None:
             raise credentials_exception
     except JWTError:
@@ -30,6 +38,13 @@ def get_current_user(
 
     statement = select(User).where(User.id == int(user_id))
     user = session.exec(statement).first()
+
     if user is None:
         raise credentials_exception
-    return user
+
+    # mocking roles assignment
+    return User(
+        id=uuid(user_id),
+        company_id=uuid(company_id),
+        roles=roles
+    )

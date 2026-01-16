@@ -7,15 +7,15 @@ from app.models.event_log import EventLog
 
 def log_event(
     *,
-    Session: Session,
+    session: Session,
     company_id: uuid4,
     entity_type: str,
     entity_id: uuid4,
     event_type: str,
     user_id: Optional[uuid4] = None,
     payload: dict | None = None,
-):
-
+) -> EventLog:
+    """Log an event to the database."""
     event = EventLog(
         company_id=company_id,
         entity_type=entity_type,
@@ -24,4 +24,6 @@ def log_event(
         user_id=user_id,
         payload=payload or {},
     )
-    Session.add(event)
+    session.add(event)
+    session.commit()
+    return event

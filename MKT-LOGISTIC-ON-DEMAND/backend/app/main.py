@@ -1,14 +1,10 @@
-from fastapi import FastAPI, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from uuid import uuid4
-from datetime import datetime
 
 from app.core.database import init_db
 from app.api.load_interest import router as load_interest_router
-from app.core.security import create_access_token
-from app.schemas.auth_login import Loginrequest
-from app.schemas.load import LoadCreate, LoadResponse
+from app.api.loads import router as loads_router
+from app.api.auth import router as auth_router
 
 
 @asynccontextmanager
@@ -20,33 +16,22 @@ async def lifespan(app: FastAPI):
     # Perform any necessary cleanup here when the application shuts down
     print("Shutting down application...")
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title="MKT Logistic On-Demand",
+    description="Plataforma de Logística sob Demanda",
+    version="1.0.0",
+    lifespan=lifespan
+)
 
-app.include_router(load_interest_router,
-                   prefix="/load_interest")
+# Register all routers
+app.include_router(auth_router)
+app.include_router(loads_router)
+app.include_router(load_interest_router, prefix="/load_interest")
 
 
 @app.get("/")
 async def read_root():
-    return {"message": "Welcome to the HEAVEN!"}
-
-
-@app.post("/auth/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user_payload = {
-        "user_id": str(uuid4()),
-        "company_id": str(uuid4()),
-        "roles": "empresa"
-    }
-
-    token = create_access_token(user_payload)
-
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
-
-    # return {"message": "Login successful"}
+    return {"message": "Welcome to MKT Logistic On-Demand Platform!"}
 
 
 @app.post("/loads/", response_model=LoadResponse)

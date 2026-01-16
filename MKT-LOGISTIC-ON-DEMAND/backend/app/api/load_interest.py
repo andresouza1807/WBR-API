@@ -28,7 +28,7 @@ async def appply_for_load(
         raise HTTPException(status_code=404, detail="Load not found")
 
     # Check if the user has already applied for this load
-    statement = select(Load).where(
+    statement = select(LoadInterest).where(
         LoadInterest.load_id == load_id,
         LoadInterest.transporter_id == current_user.id,
     )
@@ -51,18 +51,17 @@ async def appply_for_load(
 
     return load_interest
 
-
+@router.get("/{load_id}/interests")
 def list_load_interests(
-    load_id: str,
+    load_id: uuid,
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    # statement = select(LoadInterest).where(
-    #     LoadInterest.load_id == load_id,
-    #     LoadInterest.company_id == current_user.company_id,
-    # )
-    # return session.exec(statement).all()
-    return {"message": "Functionality temporarily disabled."}
+    statement = select(LoadInterest).where(
+        LoadInterest.load_id == load_id,
+        LoadInterest.company_id == current_user.company_id,
+    )
+    return session.exec(statement).all()
 
 
 @router.post("/accept")
@@ -88,16 +87,11 @@ async def accept_interest(
     interest.status = "ACCEPTED"
     load.status = "ASSIGNED"
     load.assigned_transporter_id = interest.transporter_id
-    # load_interest = session.get(LoadInterest, interest_id)
-    # if not load_interest:
-    #     raise HTTPException(status_code=404, detail="Load interest not found")
-
-    # # Additional checks can be added here (e.g., verifying permissions)
-
-    # load_interest.status = "ACCEPTED"
-    # session.add(load_interest)
-    # session.commit()
-    # session.refresh(load_interest)
+    session.add(interest)
+    session.add(load)
+    session.commit()
+    session.refresh(interest)
+    return interest
 
     # return load_interest
     log_event(

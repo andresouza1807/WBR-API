@@ -36,15 +36,15 @@ def get_current_user(
     except JWTError:
         raise credentials_exception
 
-    statement = select(User).where(User.id == int(user_id))
+    try:
+        user_uuid = uuid(user_id)
+    except (ValueError, AttributeError):
+        raise credentials_exception
+
+    statement = select(User).where(User.id == user_uuid)
     user = session.exec(statement).first()
 
     if user is None:
         raise credentials_exception
 
-    # mocking roles assignment
-    return User(
-        id=uuid(user_id),
-        company_id=uuid(company_id),
-        roles=roles
-    )
+    return user

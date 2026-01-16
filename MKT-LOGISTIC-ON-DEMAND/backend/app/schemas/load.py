@@ -1,28 +1,34 @@
 from uuid import UUID
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class LoadCreate(BaseModel):
-    def __call__(self, *args, **kwds):
-        return super().__call__(*args, **kwds)
     title: str
-    description: str | None = None
-    weight: float
+    description: Optional[str] = None
+    weight_kg: int
     volume_m3: float
+
+
+class LoadUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    weight_kg: Optional[int] = None
+    volume_m3: Optional[float] = None
+    status: Optional[str] = None
 
 
 class LoadResponse(BaseModel):
-    def __call__(self, *args, **kwds):
-        return super().__call__(*args, **kwds)
     id: UUID
-    title: str
-    description: str | None = None
-    weight: float
-    volume_m3: float
     company_id: UUID
+    title: str
+    description: Optional[str] = None
+    weight_kg: int
+    volume_m3: float
+    status: str
+    assigned_transporter_id: Optional[UUID] = None
+    created_by: UUID
     created_at: datetime
 
-    class Config:
-        from_attribute = True
-        # orm_mode = True
+    model_config = {"from_attributes": True}

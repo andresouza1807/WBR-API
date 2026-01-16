@@ -18,4 +18,5 @@ class Load(SQLModel, table=True):
 
     created_by: UUID = Field(foreign_key="user.id")
     created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
+    updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={
+                                 "onupdate": datetime.now})

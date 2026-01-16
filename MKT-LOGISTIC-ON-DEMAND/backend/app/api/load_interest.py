@@ -15,13 +15,14 @@ router = APIRouter(tags=["Load Interest"])
 
 
 @router.post("/{load_id}/interest", response_model=LoadInterest)
-async def appply_for_load(
+async def apply_for_load(
     load_id: uuid,
     proposed_price: float | None = None,
     message: str | None = None,
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
+    """Apply for a load as a transporter."""
     # Check if the load exists
     load = session.get(Load, load_id)
     if not load:
@@ -65,15 +66,18 @@ def list_load_interests(
     return session.exec(statement).all()
 
 
-@router.post("/accept")
+@router.post("/accept", response_model=dict)
 async def accept_interest(
     interest_id: str,
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
+    """Accept a load interest and assign the load."""
     interest = session.exec(
-        select(LoadInterest).where(LoadInterest.id == interest_id,
-                                   LoadInterest.company_id == current_user.company_id)
+        select(LoadInterest).where(
+            LoadInterest.id == interest_id,
+            LoadInterest.company_id == current_user.company_id
+        )
     ).first()
     if not interest:
         raise HTTPException(status_code=404, detail="Load interest not found")
@@ -81,7 +85,7 @@ async def accept_interest(
     load = session.get(Load, interest.load_id)
     if not load:
         raise HTTPException(status_code=404, detail="Load not found")
-    if load.status != "OPEN":
+    if load.status != "open":
         raise HTTPException(
             status_code=400, detail="Load is not open for accepting interests")
 
@@ -92,22 +96,20 @@ async def accept_interest(
     session.add(load)
     session.commit()
     session.refresh(interest)
-    return interest
 
-    # return load_interest
+    # Log event
     log_event(
-        Session=session,
+        session=session,
         company_id=current_user.company_id,
         user_id=current_user.id,
         entity_id=load.id,
-        entity_type="Load",
+        entity_type="load",
         event_type=EventType.LOAD_INTEREST_ACCEPTED,
         payload={
-            "interest_id": interest.id,
+            "interest_id": str(interest.id),
             "proposed_price": interest.proposed_price,
-            "transporter_id": interest.transporter_id,
-            "interest_id": interest.id,
+            "transporter_id": str(interest.transporter_id),
         },
-
     )
-    return {"message": "Functionality temporarily disabled."}
+
+    return {"message": "Load interest accepted successfully"}

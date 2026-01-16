@@ -1,5 +1,5 @@
 from sqlmodel import Session
-from uuid import uuid4
+from uuid import UUID
 from typing import Optional
 
 from app.models.event_log import EventLog
@@ -8,11 +8,11 @@ from app.models.event_log import EventLog
 def log_event(
     *,
     session: Session,
-    company_id: uuid4,
+    company_id: UUID,
     entity_type: str,
-    entity_id: uuid4,
+    entity_id: UUID,
     event_type: str,
-    user_id: Optional[uuid4] = None,
+    user_id: Optional[UUID] = None,
     payload: dict | None = None,
 ) -> EventLog:
     """Log an event to the database."""

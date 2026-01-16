@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
-from app.schemas.auth import Loginrequest, TokenResponse
+from app.schemas.auth import LoginRequest, TokenResponse
 from app.models.user import User
+from app.models.company import Company
 from app.core.database import get_session
 from app.core.security import verify_password, create_access_token, hash_password
 from app.api.deps import get_current_user
@@ -13,7 +14,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/login", response_model=TokenResponse)
 def login(
-    data: Loginrequest,
+    data: LoginRequest,
     session: Session = Depends(get_session)
 ):
     """Login endpoint that returns JWT token."""
@@ -35,7 +36,7 @@ def register(
     data: UserCreate,
     session: Session = Depends(get_session)
 ):
-    """Register a new user."""
+    """Register a new user. Company ID required in UserCreate."""
     # Check if user already exists
     existing_user = session.exec(
         select(User).where(User.email == data.email)
@@ -55,6 +56,7 @@ def register(
         email=data.email,
         password_hash=hashed_password,
         role=data.role,
+        company_id=data.company_id,
     )
     session.add(user)
     session.commit()

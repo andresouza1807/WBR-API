@@ -12,4 +12,4 @@ class User(SQLModel, table=True):
     role: str = "USER"  # admin | carrier
     active: bool = True
     created_at: datetime = Field(default_factory=datetime.now)
- #  updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})

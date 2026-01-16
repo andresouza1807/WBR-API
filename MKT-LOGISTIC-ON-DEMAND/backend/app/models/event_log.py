@@ -1,16 +1,14 @@
-from sqlalchemy import Column
+from sqlalchemy import Column, JSON
 from sqlmodel import SQLModel, Field
 from uuid import UUID, uuid4
 from datetime import datetime
-from typing import Optional
-from sqlalchemy import JSON
 
 
 class EventLog(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True, index=True)
 
     company_id: UUID = Field(index=True)
-    user_id: Optional[UUID] = Field(default=None, index=True)
+    user_id: UUID | None = Field(default=None, index=True)
 
     entity_id: UUID = Field(index=True)
     entity_type: str = Field(index=True)

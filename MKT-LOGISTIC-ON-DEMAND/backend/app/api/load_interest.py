@@ -51,6 +51,7 @@ async def appply_for_load(
 
     return load_interest
 
+
 @router.get("/{load_id}/interests")
 def list_load_interests(
     load_id: uuid,

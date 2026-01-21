@@ -5,10 +5,13 @@ Data: 21 de Janeiro de 2026
 ## ✅ Testes Executados com Sucesso
 
 ### 1️⃣ Health Check
+
 ```bash
 curl -s http://localhost:3000/health
 ```
+
 **Resultado:** ✅ OK
+
 ```json
 {
   "status": "ok",
@@ -18,21 +21,27 @@ curl -s http://localhost:3000/health
 ```
 
 ### 2️⃣ Criar Sessão WhatsApp
+
 ```bash
 curl -X POST http://localhost:3000/whatsapp/sessions \
   -H "Content-Type: application/json" \
   -d '{"sessionId": "test-session-1"}'
 ```
+
 **Resultado:** ✅ Sessão criada
+
 ```
 QR Code generated for session test-session-1
 ```
 
 ### 3️⃣ Listar Sessões
+
 ```bash
 curl http://localhost:3000/whatsapp/sessions
 ```
+
 **Resultado:** ✅ Sessão listada
+
 ```json
 {
   "sessions": [
@@ -45,6 +54,7 @@ curl http://localhost:3000/whatsapp/sessions
 ```
 
 ### 4️⃣ Webhook - Mensagem Recebida
+
 ```bash
 curl -X POST http://localhost:3000/webhook/messages \
   -H "Content-Type: application/json" \
@@ -63,12 +73,15 @@ curl -X POST http://localhost:3000/webhook/messages \
     }
   }'
 ```
+
 **Resultado:** ✅ Webhook processado
+
 ```
 ✉️ Message from 5511999999999@c.us: Olá! Mensagem de teste
 ```
 
 ### 5️⃣ Webhook - Confirmação (ACK)
+
 ```bash
 curl -X POST http://localhost:3000/webhook/messages \
   -H "Content-Type: application/json" \
@@ -82,7 +95,9 @@ curl -X POST http://localhost:3000/webhook/messages \
     }
   }'
 ```
+
 **Resultado:** ✅ ACK recebido
+
 ```json
 {
   "success": true,
@@ -91,16 +106,21 @@ curl -X POST http://localhost:3000/webhook/messages \
 ```
 
 ### 6️⃣ Verificar Fila de Retry
+
 ```bash
 curl http://localhost:3000/webhook/retry-queue
 ```
+
 **Resultado:** ✅ Fila vazia
 
 ### 7️⃣ Status da Sessão
+
 ```bash
 curl http://localhost:3000/whatsapp/sessions/test-session-1/status
 ```
+
 **Resultado:** ✅ Status obtido
+
 ```json
 {
   "sessionId": "test-session-1",
@@ -124,6 +144,7 @@ curl http://localhost:3000/whatsapp/sessions/test-session-1/status
 ## 🎉 Conclusão
 
 Todos os testes passaram com sucesso! O WhatsApp Adapter está funcionando corretamente com:
+
 - ✅ Gerenciamento de sessões
 - ✅ Sistema de webhooks
 - ✅ Fila de retry

@@ -8,7 +8,7 @@ const options = {
       version: '1.0.0',
       description: 'API completa para gerenciar múltiplas sessões WhatsApp com suporte a webhooks',
       contact: {
-        name: 'André Souza',
+        name: 'Andre Souza',
         url: 'https://github.com/andresouza1807/WBR-API',
       },
       license: {

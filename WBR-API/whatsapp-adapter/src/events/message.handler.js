@@ -1,5 +1,4 @@
-const axios = require('axios');
-const config = require('../config/env');
+const webhookService = require('../services/webhook.service');
 
 class MessageHandler {
   async handle(sessionId, message) {
@@ -45,32 +44,12 @@ class MessageHandler {
       }
 
       // Send to webhook/API
-      await this.sendToWebhook(messageData);
+      await webhookService.sendMessageWebhook(messageData);
 
       return messageData;
     } catch (error) {
       console.error(`Error handling message in session ${sessionId}:`, error);
       throw error;
-    }
-  }
-
-  async sendToWebhook(messageData) {
-    try {
-      // Configure webhook URL and implementation according to your API
-      const webhookUrl = `${config.apiUrl}/webhook/messages`;
-
-      await axios.post(webhookUrl, messageData, {
-        timeout: 10000,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Session-ID': messageData.sessionId,
-        },
-      });
-
-      console.log('Message sent to webhook successfully');
-    } catch (error) {
-      console.error('Error sending message to webhook:', error.message);
-      // Implement retry logic or queue system here if needed
     }
   }
 

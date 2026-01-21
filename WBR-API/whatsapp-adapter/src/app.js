@@ -1,5 +1,6 @@
 const express = require('express');
 const whatsappRoutes = require('./routes/whatsapp.routes');
+const webhookRoutes = require('./routes/webhook.routes');
 const config = require('./config/env');
 
 const app = express();
@@ -16,6 +17,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/whatsapp', whatsappRoutes);
+app.use('/webhook', webhookRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

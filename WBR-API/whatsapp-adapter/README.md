@@ -53,6 +53,7 @@ LOG_LEVEL=info
 ### Sessões
 
 #### Criar uma nova sessão
+
 ```bash
 POST /whatsapp/sessions
 Content-Type: application/json
@@ -63,21 +64,25 @@ Content-Type: application/json
 ```
 
 #### Obter código QR
+
 ```bash
 GET /whatsapp/sessions/{sessionId}/qr
 ```
 
 #### Status da sessão
+
 ```bash
 GET /whatsapp/sessions/{sessionId}/status
 ```
 
 #### Listar todas as sessões
+
 ```bash
 GET /whatsapp/sessions
 ```
 
 #### Destruir sessão
+
 ```bash
 DELETE /whatsapp/sessions/{sessionId}
 ```
@@ -85,6 +90,7 @@ DELETE /whatsapp/sessions/{sessionId}
 ### Mensagens
 
 #### Enviar mensagem
+
 ```bash
 POST /whatsapp/sessions/{sessionId}/send-message
 Content-Type: application/json
@@ -96,6 +102,7 @@ Content-Type: application/json
 ```
 
 #### Enviar mídia
+
 ```bash
 POST /whatsapp/sessions/{sessionId}/send-media
 Content-Type: application/json
@@ -110,6 +117,7 @@ Content-Type: application/json
 ### Contatos
 
 #### Obter informações do contato
+
 ```bash
 GET /whatsapp/sessions/{sessionId}/contact/{phoneNumber}
 ```
@@ -182,16 +190,19 @@ LOG_LEVEL=debug  # debug, info, warn, error
 ## Troubleshooting
 
 ### QR Code não aparece
+
 - Verifique se o Chromium está instalado
 - Tente recriar a sessão
 - Confira os logs para mais detalhes
 
 ### Autenticação falha
+
 - Delete a pasta `sessions/{sessionId}`
 - Recrie a sessão
 - Escaneie o novo QR code
 
 ### Conexão perdida
+
 - O adapter tenta reconectar automaticamente
 - Verifique a conexão com a internet
 - Confira os logs
@@ -227,11 +238,13 @@ WEBHOOK_RETRY_DELAY=5000
 ### Recebimento de Mensagens
 
 #### Endpoint
+
 ```bash
 POST /webhook/messages
 ```
 
 #### Payload de Mensagem Recebida
+
 ```json
 {
   "sessionId": "test-session-1",
@@ -250,6 +263,7 @@ POST /webhook/messages
 ```
 
 #### Payload de Confirmação (ACK)
+
 ```json
 {
   "sessionId": "test-session-1",
@@ -267,11 +281,13 @@ POST /webhook/messages
 Quando um webhook falha, o adapter adiciona à fila de retry e tenta novamente automaticamente.
 
 #### Verificar Status da Fila
+
 ```bash
 GET /webhook/retry-queue
 ```
 
 Response:
+
 ```json
 {
   "queueSize": 2,
@@ -286,11 +302,13 @@ Response:
 ```
 
 #### Processar Fila Manualmente
+
 ```bash
 POST /webhook/retry-queue/process
 ```
 
 #### Limpar Fila
+
 ```bash
 DELETE /webhook/retry-queue
 ```

@@ -1,7 +1,0 @@
-Python
-FastAPI
-SQLModel (tipagem + SQLAlchemy)
-Postgresql
-Alembic
-JWT
-Docker

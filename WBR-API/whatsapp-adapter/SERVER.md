@@ -3,9 +3,11 @@
 ## Iniciar o Server
 
 ### ⚡ Comando Rápido (Força Fechar Porta 3000 + Inicia Server)
+
 ```bash
 lsof -ti:3000 | xargs kill -9 2>/dev/null; cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter && npm run dev
 ```
+
 - Mata qualquer processo na porta 3000
 - Inicia o server imediatamente
 - **Use isso quando a porta estiver ocupada!**
@@ -13,47 +15,57 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null; cd /home/andre-souza/Desktop/Vscode/W
 ---
 
 ### Opção 1: Modo Desenvolvimento (Com Nodemon - Auto-reload)
+
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 npm run dev
 ```
+
 - Server rodará em modo desenvolvimento
 - Qualquer mudança nos arquivos vai reiniciar automaticamente
 - Use **CTRL+C** para parar
 
 ### Opção 2: Modo Background + Força Fechar Porta 3000
+
 ```bash
 lsof -ti:3000 | xargs kill -9 2>/dev/null; sleep 2; cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter && nohup npm run dev > server.log 2>&1 &
 echo "✅ Server iniciado em background"
 ```
+
 - Mata processo na porta 3000
 - Aguarda 2 segundos
 - Inicia o server em background (nohup)
 - Recomendado para produção
 
 ### Opção 3: Modo Background (Recomendado para Produção)
+
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 nohup npm run dev > server.log 2>&1 &
 ```
+
 - Server rodará em background (não para com CTRL+C)
 - Logs salvos em `server.log`
 - Pode usar o terminal para outros comandos
 
 ### Opção 3: Modo Background (Recomendado para Produção)
+
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 nohup npm run dev > server.log 2>&1 &
 ```
+
 - Server rodará em background (não para com CTRL+C)
 - Logs salvos em `server.log`
 - Pode usar o terminal para outros comandos
 
 ### Opção 4: Modo Produção
+
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 npm start
 ```
+
 - Inicia diretamente sem nodemon
 
 ---
@@ -61,12 +73,14 @@ npm start
 ## Parar o Server
 
 ### Opção 1: Se estiver em Modo Desenvolvimento
+
 ```bash
 # Apenas pressione CTRL+C no terminal onde o server está rodando
 ^C
 ```
 
 ### Opção 2: Se estiver em Background (nohup)
+
 ```bash
 # Matar todos os processos npm/node
 pkill -f "npm run dev"
@@ -79,6 +93,7 @@ lsof -ti:3000 | xargs kill -9
 ```
 
 ### Opção 3: Listar Processos Rodando
+
 ```bash
 ps aux | grep "npm run dev" | grep -v grep
 ```
@@ -88,20 +103,25 @@ ps aux | grep "npm run dev" | grep -v grep
 ## Verificar Status do Server
 
 ### Health Check
+
 ```bash
 curl -s http://localhost:3000/health
 ```
+
 **Resposta esperada:**
+
 ```json
 {"status":"ok","environment":"development","timestamp":"2026-01-21T03:30:02.175Z"}
 ```
 
 ### Listar Sessões Ativas
+
 ```bash
 curl -s http://localhost:3000/whatsapp/sessions
 ```
 
 ### Verificar se Porta 3000 Está em Uso
+
 ```bash
 lsof -i :3000
 ```
@@ -111,31 +131,39 @@ lsof -i :3000
 ## Acessar os Endpoints
 
 ### 🎨 Dashboard (GUI)
+
 ```
 http://localhost:3000
 ```
+
 - Interface visual para gerenciar sessões WhatsApp
 - Criar novas sessões
 - Visualizar QR codes
 - Monitorar status
 
 ### 📖 API Documentation (Swagger)
+
 ```
 http://localhost:3000/api-docs
 ```
+
 - Documentação interativa de todos os endpoints
 - Testar endpoints direto no navegador
 
 ### ❤️ Health Check
+
 ```
 http://localhost:3000/health
 ```
+
 - Verifica se o server está respondendo
 
 ### 🔍 Sessões WhatsApp
+
 ```
 http://localhost:3000/whatsapp/sessions
 ```
+
 - Lista todas as sessões ativas
 
 ---
@@ -143,11 +171,13 @@ http://localhost:3000/whatsapp/sessions
 ## Ver Logs do Server
 
 ### Logs em Tempo Real (Modo Dev)
+
 ```bash
 # Já aparecem no terminal onde o server está rodando
 ```
 
 ### Logs do Background (nohup)
+
 ```bash
 # Ver últimas 50 linhas
 tail -50 /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter/server.log
@@ -164,6 +194,7 @@ tail -f /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter/server.log
 ## Instalação de Dependências
 
 Se for preciso reinstalar as dependências:
+
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 npm install
@@ -174,6 +205,7 @@ npm install
 ## Variáveis de Ambiente
 
 Criar arquivo `.env` na raiz do projeto:
+
 ```bash
 # Porta
 PORT=3000
@@ -195,18 +227,21 @@ WEBHOOK_RETRY_ATTEMPTS=3
 ## Troubleshooting
 
 ### ❌ Erro: "Port 3000 already in use"
+
 ```bash
 # Matar processo na porta 3000
 lsof -ti:3000 | xargs kill -9
 ```
 
 ### ❌ Erro: "Cannot find module"
+
 ```bash
 # Reinstalar dependências
 npm install
 ```
 
 ### ❌ Server parou inesperadamente
+
 ```bash
 # Verificar logs
 tail -50 server.log
@@ -216,6 +251,7 @@ npm run dev
 ```
 
 ### ❌ Sessão não conecta
+
 - Verificar QR code no dashboard
 - Confirmado que QR foi escaneado no WhatsApp?
 - Conexão de internet está OK?
@@ -253,8 +289,8 @@ npm cache clean --force
 | **Iniciar Rápido (Kill + Start)** | `lsof -ti:3000 \| xargs kill -9 2>/dev/null; npm run dev` |
 | **Parar** | `CTRL+C` ou `pkill -f "npm run dev"` |
 | **Health Check** | `curl http://localhost:3000/health` |
-| **Dashboard** | http://localhost:3000 |
-| **Swagger Docs** | http://localhost:3000/api-docs |
+| **Dashboard** | <http://localhost:3000> |
+| **Swagger Docs** | <http://localhost:3000/api-docs> |
 | **Ver Logs** | `tail -f server.log` |
 
 ---

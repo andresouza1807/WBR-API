@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Adapter - Connection Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📱 WhatsApp Adapter Dashboard</h1>
+                <p>Connect your WhatsApp to the API</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Create Session Card -->
+            <div class="card">
+                <h2>Create New Session</h2>
+                <div class="form-group">
+                    <label for="sessionId">Session Name:</label>
+                    <input type="text" id="sessionId" placeholder="e.g., my-whatsapp-session" />
+                </div>
+                <button class="btn btn-primary" onclick="createSession()">Create Session</button>
+                <div id="createStatus" class="status-message"></div>
+            </div>
+
+            <!-- Sessions List Card -->
+            <div class="card">
+                <h2>Active Sessions</h2>
+                <div id="sessionsList" class="sessions-list">
+                    <p class="empty-state">Loading sessions...</p>
+                </div>
+                <button class="btn btn-secondary" onclick="refreshSessions()">Refresh Sessions</button>
+            </div>
+
+            <!-- QR Code Display Card -->
+            <div class="card" id="qrCard" style="display: none;">
+                <h2>Scan QR Code</h2>
+                <p class="instruction">Scan this QR code with your WhatsApp on your phone to authenticate:</p>
+                <div id="qrContainer" class="qr-container">
+                    <img id="qrImage" src="" alt="QR Code" />
+                </div>
+                <p class="session-name" id="qrSessionName"></p>
+                <div class="loading" id="qrLoading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Waiting for authentication...</p>
+                </div>
+                <button class="btn btn-secondary" onclick="closeQRDisplay()">Close</button>
+            </div>
+
+            <!-- Session Details Card -->
+            <div class="card" id="sessionDetailsCard" style="display: none;">
+                <h2>Session Details</h2>
+                <div id="sessionDetails" class="session-details"></div>
+                <button class="btn btn-secondary" onclick="closeSessionDetails()">Close</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>API Documentation: <a href="/api-docs" target="_blank">Swagger UI</a></p>
+            <p>&copy; 2025 WhatsApp Adapter. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

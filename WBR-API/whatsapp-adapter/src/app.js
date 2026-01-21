@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const whatsappRoutes = require('./routes/whatsapp.routes');
@@ -11,10 +12,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files (CSS, JS, images)
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Request logging
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
+});
+
+// GUI Dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Swagger Documentation
@@ -35,7 +44,7 @@ app.use('/webhook', webhookRoutes);
  * @swagger
  * /:
  *   get:
- *     summary: Root endpoint
+ *     summary: Root endpoint - Redirects to dashboard
  *     tags:
  *       - General
  *     responses:
@@ -43,11 +52,7 @@ app.use('/webhook', webhookRoutes);
  *         description: API está funcionando
  */
 app.get('/', (req, res) => {
-  res.json({
-    message: 'WhatsApp Adapter API',
-    version: '1.0.0',
-    documentation: '/api-docs',
-  });
+  res.redirect('/dashboard');
 });
 
 /**

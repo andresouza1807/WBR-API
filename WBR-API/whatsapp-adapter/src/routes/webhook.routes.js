@@ -4,9 +4,37 @@ const webhookService = require('../services/webhook.service');
 const router = express.Router();
 
 /**
- * Receber webhook de mensagens
- * POST /webhook/messages
+ * @swagger
+ * /webhook/messages:
+ *   post:
+ *     summary: Receber webhooks de eventos
+ *     description: Endpoint para receber webhooks de mensagens recebidas, confirmações e outros eventos
+ *     tags:
+ *       - Webhooks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sessionId:
+ *                 type: string
+ *                 example: session-1
+ *               event:
+ *                 type: string
+ *                 enum: [message.received, message.ack]
+ *               data:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Webhook processado com sucesso
+ *       400:
+ *         description: Campos obrigatórios faltando
+ *       500:
+ *         description: Erro ao processar webhook
  */
+// Receber webhook de mensagens
 router.post('/messages', async (req, res) => {
   try {
     const { sessionId, event, data } = req.body;
@@ -33,6 +61,73 @@ router.post('/messages', async (req, res) => {
     }
   } catch (error) {
     console.error('Error processing webhook:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /webhook/retry-queue:
+ *   get:
+ *     summary: Verificar fila de retry
+ *     tags:
+ *       - Webhooks
+ *     responses:
+ *       200:
+ *         description: Status da fila de retry
+ */
+// Status da fila de retry
+router.get('/retry-queue', (req, res) => {
+  try {
+    const status = webhookService.getRetryQueueStatus();
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /webhook/retry-queue:
+ *   delete:
+ *     summary: Limpar fila de retry
+ *     tags:
+ *       - Webhooks
+ *     responses:
+ *       200:
+ *         description: Fila limpa com sucesso
+ */
+// Limpar fila de retry
+router.delete('/retry-queue', (req, res) => {
+  try {
+    const result = webhookService.clearRetryQueue();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /webhook/retry-queue/process:
+ *   post:
+ *     summary: Reprocessar fila de retry manualmente
+ *     tags:
+ *       - Webhooks
+ *     responses:
+ *       200:
+ *         description: Fila reprocessada
+ */
+// Reprocessar fila de retry manualmente
+router.post('/retry-queue/process', async (req, res) => {
+  try {
+    await webhookService.processRetryQueue();
+    const status = webhookService.getRetryQueueStatus();
+    res.json({
+      message: 'Retry queue processed',
+      status,
+    });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -81,48 +176,5 @@ function handleMessageAck(req, res, data) {
     res.status(500).json({ error: error.message });
   }
 }
-
-/**
- * Status da fila de retry
- * GET /webhook/retry-queue
- */
-router.get('/retry-queue', (req, res) => {
-  try {
-    const status = webhookService.getRetryQueueStatus();
-    res.json(status);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * Limpar fila de retry
- * DELETE /webhook/retry-queue
- */
-router.delete('/retry-queue', (req, res) => {
-  try {
-    const result = webhookService.clearRetryQueue();
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * Reprocessar fila de retry manualmente
- * POST /webhook/retry-queue/process
- */
-router.post('/retry-queue/process', async (req, res) => {
-  try {
-    await webhookService.processRetryQueue();
-    const status = webhookService.getRetryQueueStatus();
-    res.json({
-      message: 'Retry queue processed',
-      status,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 module.exports = router;

@@ -4,6 +4,41 @@ const whatsappService = require('../services/whatsapp.service');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /whatsapp/sessions:
+ *   post:
+ *     summary: Criar uma nova sessão WhatsApp
+ *     description: Inicializa uma nova sessão WhatsApp que gerará um código QR para autenticação
+ *     tags:
+ *       - Sessions
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sessionId:
+ *                 type: string
+ *                 example: session-1
+ *     responses:
+ *       201:
+ *         description: Sessão criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 sessionId:
+ *                   type: string
+ *       400:
+ *         description: SessionId é obrigatório
+ *       500:
+ *         description: Erro ao criar sessão
+ */
 // Create/Initialize WhatsApp Session
 router.post('/sessions', async (req, res) => {
   try {
@@ -21,6 +56,28 @@ router.post('/sessions', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions/{sessionId}/qr:
+ *   get:
+ *     summary: Obter código QR da sessão
+ *     description: Retorna o código QR para escanear e autenticar a sessão WhatsApp
+ *     tags:
+ *       - Sessions
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Código QR gerado
+ *       202:
+ *         description: Aguardando geração do código QR
+ *       404:
+ *         description: Sessão não encontrada
+ */
 // Get QR Code
 router.get('/sessions/:sessionId/qr', (req, res) => {
   try {
@@ -41,6 +98,25 @@ router.get('/sessions/:sessionId/qr', (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions/{sessionId}/status:
+ *   get:
+ *     summary: Obter status da sessão
+ *     tags:
+ *       - Sessions
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Status da sessão
+ *       500:
+ *         description: Erro ao obter status
+ */
 // Get Session Status
 router.get('/sessions/:sessionId/status', async (req, res) => {
   try {
@@ -52,6 +128,24 @@ router.get('/sessions/:sessionId/status', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions:
+ *   get:
+ *     summary: Listar todas as sessões
+ *     tags:
+ *       - Sessions
+ *     responses:
+ *       200:
+ *         description: Lista de sessões
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 sessions:
+ *                   type: array
+ */
 // List All Sessions
 router.get('/sessions', (req, res) => {
   try {
@@ -62,6 +156,38 @@ router.get('/sessions', (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions/{sessionId}/send-message:
+ *   post:
+ *     summary: Enviar mensagem de texto
+ *     tags:
+ *       - Messages
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phoneNumber:
+ *                 type: string
+ *                 example: "5511999999999"
+ *               message:
+ *                 type: string
+ *                 example: "Olá! Como vai?"
+ *     responses:
+ *       200:
+ *         description: Mensagem enviada com sucesso
+ *       400:
+ *         description: Faltam parâmetros obrigatórios
+ */
 // Send Message
 router.post('/sessions/:sessionId/send-message', async (req, res) => {
   try {
@@ -80,6 +206,36 @@ router.post('/sessions/:sessionId/send-message', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions/{sessionId}/send-media:
+ *   post:
+ *     summary: Enviar mídia (imagem, vídeo, áudio, documento)
+ *     tags:
+ *       - Messages
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phoneNumber:
+ *                 type: string
+ *               mediaPath:
+ *                 type: string
+ *               caption:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Mídia enviada com sucesso
+ */
 // Send Media
 router.post('/sessions/:sessionId/send-media', async (req, res) => {
   try {
@@ -98,6 +254,28 @@ router.post('/sessions/:sessionId/send-media', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions/{sessionId}/contact/{phoneNumber}:
+ *   get:
+ *     summary: Obter informações do contato
+ *     tags:
+ *       - Contacts
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: phoneNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Informações do contato
+ */
 // Get Contact Info
 router.get('/sessions/:sessionId/contact/:phoneNumber', async (req, res) => {
   try {
@@ -109,6 +287,23 @@ router.get('/sessions/:sessionId/contact/:phoneNumber', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /whatsapp/sessions/{sessionId}:
+ *   delete:
+ *     summary: Destruir sessão WhatsApp
+ *     tags:
+ *       - Sessions
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Sessão destruída com sucesso
+ */
 // Destroy Session
 router.delete('/sessions/:sessionId', async (req, res) => {
   try {

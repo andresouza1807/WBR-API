@@ -2,6 +2,16 @@
 
 ## Iniciar o Server
 
+### ⚡ Comando Rápido (Força Fechar Porta 3000 + Inicia Server)
+```bash
+lsof -ti:3000 | xargs kill -9 2>/dev/null; cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter && npm run dev
+```
+- Mata qualquer processo na porta 3000
+- Inicia o server imediatamente
+- **Use isso quando a porta estiver ocupada!**
+
+---
+
 ### Opção 1: Modo Desenvolvimento (Com Nodemon - Auto-reload)
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
@@ -11,7 +21,17 @@ npm run dev
 - Qualquer mudança nos arquivos vai reiniciar automaticamente
 - Use **CTRL+C** para parar
 
-### Opção 2: Modo Background (Recomendado para Produção)
+### Opção 2: Modo Background + Força Fechar Porta 3000
+```bash
+lsof -ti:3000 | xargs kill -9 2>/dev/null; sleep 2; cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter && nohup npm run dev > server.log 2>&1 &
+echo "✅ Server iniciado em background"
+```
+- Mata processo na porta 3000
+- Aguarda 2 segundos
+- Inicia o server em background (nohup)
+- Recomendado para produção
+
+### Opção 3: Modo Background (Recomendado para Produção)
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 nohup npm run dev > server.log 2>&1 &
@@ -20,7 +40,16 @@ nohup npm run dev > server.log 2>&1 &
 - Logs salvos em `server.log`
 - Pode usar o terminal para outros comandos
 
-### Opção 3: Modo Produção
+### Opção 3: Modo Background (Recomendado para Produção)
+```bash
+cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
+nohup npm run dev > server.log 2>&1 &
+```
+- Server rodará em background (não para com CTRL+C)
+- Logs salvos em `server.log`
+- Pode usar o terminal para outros comandos
+
+### Opção 4: Modo Produção
 ```bash
 cd /home/andre-souza/Desktop/Vscode/WBR-API/whatsapp-adapter
 npm start
@@ -221,6 +250,7 @@ npm cache clean --force
 |------|---------|
 | **Iniciar (Dev)** | `npm run dev` |
 | **Iniciar (Background)** | `nohup npm run dev > server.log 2>&1 &` |
+| **Iniciar Rápido (Kill + Start)** | `lsof -ti:3000 \| xargs kill -9 2>/dev/null; npm run dev` |
 | **Parar** | `CTRL+C` ou `pkill -f "npm run dev"` |
 | **Health Check** | `curl http://localhost:3000/health` |
 | **Dashboard** | http://localhost:3000 |

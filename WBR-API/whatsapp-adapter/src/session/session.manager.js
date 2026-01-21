@@ -1,4 +1,5 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const QRCode = require('qrcode');
 const config = require('../config/env');
 const messageHandler = require('../events/message.handler');
 
@@ -17,6 +18,9 @@ class SessionManager {
         },
       });
 
+      // Create session object BEFORE initialization
+      this.sessions.set(sessionId, { client, status: 'initializing' });
+
       // Setup event listeners
       client.on('qr', (qr) => this.handleQR(sessionId, qr));
       client.on('authenticated', () => this.handleAuthenticated(sessionId));
@@ -26,7 +30,6 @@ class SessionManager {
       client.on('disconnected', () => this.handleDisconnected(sessionId));
 
       await client.initialize();
-      this.sessions.set(sessionId, { client, status: 'initializing' });
 
       return { success: true, sessionId };
     } catch (error) {
@@ -37,8 +40,20 @@ class SessionManager {
 
   handleQR(sessionId, qr) {
     console.log(`QR Code generated for session ${sessionId}`);
-    // Emit QR code event or store for retrieval
-    this.sessions.get(sessionId).qrCode = qr;
+    const session = this.sessions.get(sessionId);
+    if (session) {
+      // Generate QR code image from the QR string
+      QRCode.toDataURL(qr, { width: 300, margin: 1, color: { dark: '#000', light: '#FFF' } })
+        .then(qrImageUrl => {
+          session.qrCode = qrImageUrl;
+          session.qrString = qr;
+          console.log(`QR image generated for session ${sessionId}`);
+        })
+        .catch(error => {
+          console.error(`Error generating QR image for session ${sessionId}:`, error);
+          session.qrCode = null;
+        });
+    }
   }
 
   handleAuthenticated(sessionId) {
